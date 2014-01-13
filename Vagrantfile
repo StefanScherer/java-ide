@@ -1,6 +1,11 @@
 # vi: set ft=ruby :
 
 $script = <<SCRIPT
+# switch Ubuntu download mirror to German server
+sudo sed -i 's,http://us.archive.ubuntu.com/ubuntu/,http://ftp.fau.de/ubuntu/,' /etc/apt/sources.list
+sudo sed -i 's,http://security.ubuntu.com/ubuntu,http://ftp.fau.de/ubuntu,' /etc/apt/sources.list
+sudo apt-get update -y
+
 # switch to German keyboard layout
 sudo sed -i 's/"us"/"de"/g' /etc/default/keyboard
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y console-common
@@ -11,7 +16,6 @@ echo "Europe/Berlin" | sudo tee /etc/timezone
 sudo dpkg-reconfigure -f noninteractive tzdata
 
 # install Ubuntu desktop
-sudo apt-get update -y
 sudo apt-get install -y --no-install-recommends ubuntu-desktop
 sudo apt-get install -y gnome-panel
 sudo apt-get install -y unity-lens-applications
@@ -32,11 +36,22 @@ sudo apt-get install -y oracle-java7-set-default
 
 # install Eclipse Kepler 4.3.1 Java EE 
 echo Downloading Eclipse...
-curl http://mirror.netcologne.de/eclipse//technology/epp/downloads/release/kepler/SR1/eclipse-jee-kepler-SR1-linux-gtk-x86_64.tar.gz | sudo tar xzf - -C /opt 
-sudo cp /vagrant/eclipse.desktop /usr/share/applications/eclipse.desktop
+wget -q -O - http://mirror.netcologne.de/eclipse//technology/epp/downloads/release/kepler/SR1/eclipse-jee-kepler-SR1-linux-gtk-x86_64.tar.gz | sudo tar xzf - -C /opt --owner=root
+cat <<CFG | sudo tee /usr/share/applications/eclipse.desktop
+Desktop Entry]
+Version=4.3.1
+Name=Eclipse for Java EE Developers
+Comment=IDE for all seasons
+Exec=env UBUNTU_MENUPROXY=0 /opt/eclipse/eclipse
+Icon=/opt/eclipse/icon.xpm
+Terminal=false
+Type=Application
+Categories=Utility;Application;Development;IDE
+CFG
 
 # install development: 
-sudo apt-get install -y vim git
+sudo apt-get install -y git
+sudo apt-get install -y vim vim-gnome
 
 # start desktop
 echo "autologin-user=vagrant" | sudo tee -a /etc/lightdm/lightdm.conf

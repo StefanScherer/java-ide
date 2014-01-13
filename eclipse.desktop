@@ -1,9 +1,0 @@
-[Desktop Entry]
-Version=4.3.1
-Name=Eclipse for Java EE Developers
-Comment=IDE for all seasons
-Exec=env UBUNTU_MENUPROXY=0 /opt/eclipse/eclipse
-Icon=/opt/eclipse/icon.xpm
-Terminal=false
-Type=Application
-Categories=Utility;Application;Development;IDE
