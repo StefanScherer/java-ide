@@ -37,8 +37,8 @@ sudo apt-get install -y oracle-java7-set-default
 # install Eclipse Kepler 4.3.1 Java EE 
 echo Downloading Eclipse...
 wget -q -O - http://mirror.netcologne.de/eclipse//technology/epp/downloads/release/kepler/SR1/eclipse-jee-kepler-SR1-linux-gtk-x86_64.tar.gz | sudo tar xzf - -C /opt --owner=root
-cat <<CFG | sudo tee /usr/share/applications/eclipse.desktop
-Desktop Entry]
+cat <<DESKTOP | sudo tee /usr/share/applications/eclipse.desktop
+[Desktop Entry]
 Version=4.3.1
 Name=Eclipse for Java EE Developers
 Comment=IDE for all seasons
@@ -47,7 +47,7 @@ Icon=/opt/eclipse/icon.xpm
 Terminal=false
 Type=Application
 Categories=Utility;Application;Development;IDE
-CFG
+DESKTOP
 
 # install development: 
 sudo apt-get install -y git
