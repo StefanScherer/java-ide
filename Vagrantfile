@@ -21,10 +21,6 @@ sudo apt-get install -y gnome-panel
 sudo apt-get install -y unity-lens-applications
 gconftool -s /apps/gnome-terminal/profiles/Default/use_system_font -t bool false
 
-# start desktop
-echo "autologin-user=vagrant" | sudo tee -a /etc/lightdm/lightdm.conf
-sudo service lightdm restart
-
 # install Chromium  browser
 sudo apt-get install -y chromium-browser
 
@@ -40,6 +36,10 @@ echo debconf shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/deb
 echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo /usr/bin/debconf-set-selections
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y oracle-java7-installer
 sudo apt-get install -y oracle-java7-set-default
+
+# start desktop
+echo "autologin-user=vagrant" | sudo tee -a /etc/lightdm/lightdm.conf
+sudo service lightdm restart
 
 # install Eclipse Kepler 4.3.1 Java EE 
 echo Downloading Eclipse...
