@@ -1,1 +1,0 @@
-/opt/eclipse/eclipse -application org.eclipse.equinox.p2.director -repository http://download.eclipse.org/releases/kepler/ -list >/vagrant/eclipse-kepler-list.txt
