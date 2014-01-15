@@ -89,9 +89,33 @@ PREFS
 # install Eclipse Subclipse 1.6.x, because only JavaHL 1.6 is in Ubuntu precise repo
 sudo apt-get install -y libsvn-java subversion
 svn info 2>/dev/null # just to create .subversion directory with config
-sed -i 's/# password-stores = gnome-keyring,kwallet/password-stores = kwallet/g' /home/vagrant/.subversion/config
+sed -i 's/# password-stores = gnome-keyring,kwallet/password-stores = /g' /home/vagrant/.subversion/config
 echo "-Djava.library.path=/usr/lib/x86_64-linux-gnu/jni" | sudo tee -a /opt/eclipse/eclipse.ini
-/opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director -repository http://download.eclipse.org/releases/kepler/ -repository http://subclipse.tigris.org/update_1.6.x -installIU com.collabnet.subversion.merge,org.tigris.subversion.clientadapter,org.tigris.subversion.clientadapter.javahl,org.tigris.subversion.clientadapter.svnkit,org.tigris.subversion.subclipse.core,org.tigris.subversion.subclipse.doc,org.tigris.subversion.subclipse.graph,org.tigris.subversion.subclipse.mylyn,org.tigris.subversion.subclipse.tools.usage,org.tigris.subversion.subclipse.ui
+#/opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director -repository http://download.eclipse.org/releases/kepler/ -repository http://subclipse.tigris.org/update_1.6.x -installIU com.collabnet.subversion.merge,org.tigris.subversion.clientadapter,org.tigris.subversion.clientadapter.javahl,org.tigris.subversion.clientadapter.svnkit,org.tigris.subversion.subclipse.core,org.tigris.subversion.subclipse.doc,org.tigris.subversion.subclipse.graph,org.tigris.subversion.subclipse.mylyn,org.tigris.subversion.subclipse.tools.usage,org.tigris.subversion.subclipse.ui
+
+# install JBoss Tools + subclipse
+if [ ! -f /vagrant/resources/jbosstools-Update-4.1.1.Final_2013-12-08_01-06-33-B605.zip ]
+then
+  cd /vagrant/resources
+  wget -q http://download.jboss.org/jbosstools/updates/scripted-install/install.xml
+  wget -q http://download.jboss.org/jbosstools/updates/scripted-install/director.xml
+  echo Downloading JBoss Tools 4.1.1 ...
+  wget -q http://downloads.sourceforge.net/project/jboss/JBossTools/JBossTools4.1.x/jbosstools-Update-4.1.1.Final_2013-12-08_01-06-33-B605.zip
+  cd /home/vagrant
+fi
+sudo /opt/eclipse/eclipse -consolelog -nosplash -data /tmp -application org.eclipse.ant.core.antRunner -f \
+  /vagrant/resources/install.xml \
+  -DsourceZip=/vagrant/resources/jbosstools-Update-4.1.1.Final_2013-12-08_01-06-33-B605.zip \
+  -DotherRepos=http://download.jboss.org/jbosstools/updates/stable/kepler/central/core/ \
+  -DtargetDir=/opt/eclipse/ \
+  -Dinstall="org.jboss.tools.community.central.feature.feature.group,\
+org.tigris.subversion.subclipse.feature.group,\
+org.tigris.subversion.clientadapter.svnkit.feature.feature.group,\
+com.collabnet.subversion.merge.feature.feature.group,\
+net.java.dev.jna.feature.group,\
+org.tigris.subversion.clientadapter.feature.feature.group,\
+org.tigris.subversion.subclipse.graph.feature.feature.group,\
+org.tmatesoft.svnkit.feature.group"
 
 # setup VBox Guest Additions
 sudo /etc/init.d/vboxadd-x11 setup
