@@ -56,12 +56,10 @@ echo "autologin-user=vagrant" | sudo tee -a /etc/lightdm/lightdm.conf
 sudo service lightdm restart
 
 # install Eclipse Kepler 4.3.1 Java EE 
-echo Downloading Eclipse...
-
 if [ ! -f /vagrant/resources/eclipse-jee-kepler-SR1-linux-gtk-x86_64.tar.gz ]
 then
-  mkdir /vagrant/resources
   cd /vagrant/resources
+  echo Downloading Eclipse...
   wget -q http://mirror.netcologne.de/eclipse//technology/epp/downloads/release/kepler/SR1/eclipse-jee-kepler-SR1-linux-gtk-x86_64.tar.gz
   cd /home/vagrant
 fi
@@ -89,7 +87,7 @@ eclipse.preferences.version=1
 PREFS
 
 # install Eclipse Subclipse 1.6.x, because only JavaHL 1.6 is in Ubuntu precise repo
-sudo apt-get install -y libsvn-java svn
+sudo apt-get install -y libsvn-java subversion
 svn info 2>/dev/null # just to create .subversion directory with config
 sed -i 's/# password-stores = gnome-keyring,kwallet/password-stores = kwallet/g' /home/vagrant/.subversion/config
 echo "-Djava.library.path=/usr/lib/x86_64-linux-gnu/jni" | sudo tee -a /opt/eclipse/eclipse.ini
