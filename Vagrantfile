@@ -27,15 +27,29 @@ sudo apt-get install -y chromium-browser
 # install development tools
 sudo apt-get install -y git vim vim-gnome
 
+if [ ! -d /vagrant/resources ]
+then
+  mkdir /vagrant/resources
+fi
+
 # install Oracle JDK 7
 sudo apt-get purge openjdk*
 sudo apt-get install -y python-software-properties
 sudo add-apt-repository ppa:webupd8team/java
 sudo apt-get update -y
+if [ -f /vagrant/resources/jdk-7u51-linux-x64.tar.gz ]
+then
+  sudo mkdir -p /var/cache/oracle-jdk7-installer/
+  sudo cp /vagrant/resources/jdk-7u51-linux-x64.tar.gz /var/cache/oracle-jdk7-installer/jdk-7u51-linux-x64.tar.gz
+fi
 echo debconf shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
 echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo /usr/bin/debconf-set-selections
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y oracle-java7-installer
 sudo apt-get install -y oracle-java7-set-default
+if [ ! -f /vagrant/resources/jdk-7u51-linux-x64.tar.gz ]
+then
+  cp /var/cache/oracle-jdk7-installer/jdk-7u51-linux-x64.tar.gz /vagrant/resources/jdk-7u51-linux-x64.tar.gz
+fi
 
 # start desktop
 echo "autologin-user=vagrant" | sudo tee -a /etc/lightdm/lightdm.conf
@@ -43,7 +57,15 @@ sudo service lightdm restart
 
 # install Eclipse Kepler 4.3.1 Java EE 
 echo Downloading Eclipse...
-wget -q -O - http://mirror.netcologne.de/eclipse//technology/epp/downloads/release/kepler/SR1/eclipse-jee-kepler-SR1-linux-gtk-x86_64.tar.gz | sudo tar xzf - -C /opt --owner=root
+
+if [ ! -f /vagrant/resources/eclipse-jee-kepler-SR1-linux-gtk-x86_64.tar.gz ]
+then
+  mkdir /vagrant/resources
+  cd /vagrant/resources
+  wget -q http://mirror.netcologne.de/eclipse//technology/epp/downloads/release/kepler/SR1/eclipse-jee-kepler-SR1-linux-gtk-x86_64.tar.gz
+  cd /home/vagrant
+fi
+sudo tar xzf /vagrant/resources/eclipse-jee-kepler-SR1-linux-gtk-x86_64.tar.gz -C /opt --owner=root
 cat <<DESKTOP | sudo tee /usr/share/applications/eclipse.desktop
 [Desktop Entry]
 Version=4.3.1
@@ -67,7 +89,9 @@ eclipse.preferences.version=1
 PREFS
 
 # install Eclipse Subclipse 1.6.x, because only JavaHL 1.6 is in Ubuntu precise repo
-sudo apt-get install -y libsvn-java
+sudo apt-get install -y libsvn-java svn
+svn info 2>/dev/null # just to create .subversion directory with config
+sed -i 's/# password-stores = gnome-keyring,kwallet/password-stores = kwallet/g' /home/vagrant/.subversion/config
 echo "-Djava.library.path=/usr/lib/x86_64-linux-gnu/jni" | sudo tee -a /opt/eclipse/eclipse.ini
 /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director -repository http://download.eclipse.org/releases/kepler/ -repository http://subclipse.tigris.org/update_1.6.x -installIU com.collabnet.subversion.merge,org.tigris.subversion.clientadapter,org.tigris.subversion.clientadapter.javahl,org.tigris.subversion.clientadapter.svnkit,org.tigris.subversion.subclipse.core,org.tigris.subversion.subclipse.doc,org.tigris.subversion.subclipse.graph,org.tigris.subversion.subclipse.mylyn,org.tigris.subversion.subclipse.tools.usage,org.tigris.subversion.subclipse.ui
 
@@ -81,10 +105,6 @@ SCRIPT
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  if Vagrant.has_plugin?("vagrant-cachier")
-    config.cache.auto_detect = true
-  end
-
   config.vm.box = "precise64"
   config.vm.box_url = "http://files.vagrantup.com/precise64.box"
 
