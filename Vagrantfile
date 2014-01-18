@@ -51,9 +51,7 @@ then
   cp /var/cache/oracle-jdk7-installer/jdk-7u51-linux-x64.tar.gz /vagrant/resources/jdk-7u51-linux-x64.tar.gz
 fi
 
-# start desktop
-echo "autologin-user=vagrant" | sudo tee -a /etc/lightdm/lightdm.conf
-sudo service lightdm restart
+sudo apt-get install maven
 
 # install Eclipse Kepler 4.3.1 Java EE 
 if [ ! -f /vagrant/resources/eclipse-jee-kepler-SR1-linux-gtk-x86_64.tar.gz ]
@@ -92,6 +90,10 @@ svn info 2>/dev/null # just to create .subversion directory with config
 sed -i 's/# password-stores = gnome-keyring,kwallet/password-stores = /g' /home/vagrant/.subversion/config
 echo "-Djava.library.path=/usr/lib/x86_64-linux-gnu/jni" | sudo tee -a /opt/eclipse/eclipse.ini
 #/opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director -repository http://download.eclipse.org/releases/kepler/ -repository http://subclipse.tigris.org/update_1.6.x -installIU com.collabnet.subversion.merge,org.tigris.subversion.clientadapter,org.tigris.subversion.clientadapter.javahl,org.tigris.subversion.clientadapter.svnkit,org.tigris.subversion.subclipse.core,org.tigris.subversion.subclipse.doc,org.tigris.subversion.subclipse.graph,org.tigris.subversion.subclipse.mylyn,org.tigris.subversion.subclipse.tools.usage,org.tigris.subversion.subclipse.ui
+
+# start desktop
+echo "autologin-user=vagrant" | sudo tee -a /etc/lightdm/lightdm.conf
+sudo service lightdm restart
 
 # install JBoss Tools + subclipse
 if [ ! -f /vagrant/resources/jbosstools-Update-4.1.1.Final_2013-12-08_01-06-33-B605.zip ]

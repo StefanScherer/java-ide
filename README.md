@@ -20,7 +20,7 @@ The Java IDE will be installed into an Ubuntu 12.04 box. Just clone this repo an
 *   git command line
 *   maven 3.0.4 command line
 *   Chromium Browser
-*   Eclipse Kepler 4.3.1 
+*   Eclipse Kepler 4.3.1  for Java JEE
 *   JBoss Tools 4.1.1
 *   Subclipse
 
