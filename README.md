@@ -12,6 +12,22 @@ The Java IDE will be installed into an Ubuntu 12.04 box. Just clone this repo an
     cd java-ide
     vagrant up
 
+# What's in the box
+
+*   Ubuntu 12.04.3 LTS 64bit
+*   Oracle JDK 7 64bit
+*   subversion  command line
+*   git command line
+*   maven 3.0.4 command line
+*   Chromium Browser
+*   Eclipse Kepler 4.3.1 
+*   JBoss Tools 4.1.1
+*   Subclipse
+
+# To be done
+*   JBoss 
+
+
 # Licensing
 Copyright (c) 2014 Stefan Scherer
 
