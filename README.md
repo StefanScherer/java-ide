@@ -23,6 +23,7 @@ The Java IDE will be installed into an Ubuntu 12.04 box. Just clone this repo an
 *   Eclipse Kepler 4.3.1  for Java JEE
 *   JBoss Tools 4.1.1
 *   Subclipse
+*   Markdown Editor
 
 # To be done
 *   JBoss 

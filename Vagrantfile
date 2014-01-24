@@ -119,6 +119,9 @@ org.tigris.subversion.clientadapter.feature.feature.group,\
 org.tigris.subversion.subclipse.graph.feature.feature.group,\
 org.tmatesoft.svnkit.feature.group"
 
+# install Markdown Editor
+/opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director -repository http://download.eclipse.org/releases/kepler/ -repository http://dl.bintray.com/enide/Markdown/1.0.0/ -installIU markdown.editor.feature.feature.group
+
 # setup VBox Guest Additions
 sudo /etc/init.d/vboxadd-x11 setup
 DISPLAY=:0.0 gsettings set com.canonical.Unity.Launcher favorites "['nautilus-home.desktop', 'ubuntu-software-center.desktop', 'gnome-control-center.desktop', 'gnome-terminal.desktop', 'chromium-browser.desktop', 'eclipse.desktop', 'gvim.desktop']"
