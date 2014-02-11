@@ -91,6 +91,16 @@ sed -i 's/# password-stores = gnome-keyring,kwallet/password-stores = /g' /home/
 echo "-Djava.library.path=/usr/lib/x86_64-linux-gnu/jni" | sudo tee -a /opt/eclipse/eclipse.ini
 #/opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director -repository http://download.eclipse.org/releases/kepler/ -repository http://subclipse.tigris.org/update_1.6.x -installIU com.collabnet.subversion.merge,org.tigris.subversion.clientadapter,org.tigris.subversion.clientadapter.javahl,org.tigris.subversion.clientadapter.svnkit,org.tigris.subversion.subclipse.core,org.tigris.subversion.subclipse.doc,org.tigris.subversion.subclipse.graph,org.tigris.subversion.subclipse.mylyn,org.tigris.subversion.subclipse.tools.usage,org.tigris.subversion.subclipse.ui
 
+
+# create Launcher with our preferred applications
+# (installed Applications see /usr/share/applications/*.desktop)
+cat <<GSCHEMA | sudo tee /usr/share/glib-2.0/schemas/10_local-unity-launcher.gschema.override
+[com.canonical.Unity.Launcher]
+favorites=['nautilus-home.desktop', 'ubuntu-software-center.desktop', 'gnome-control-center.desktop', 'gnome-terminal.desktop', 'chromium-browser.desktop', 'eclipse.desktop', 'gvim.desktop']
+GSCHEMA
+
+sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
+
 # start desktop
 echo "autologin-user=vagrant" | sudo tee -a /etc/lightdm/lightdm.conf
 sudo service lightdm restart
@@ -124,7 +134,6 @@ org.tmatesoft.svnkit.feature.group"
 
 # setup VBox Guest Additions
 sudo /etc/init.d/vboxadd-x11 setup
-DISPLAY=:0.0 gsettings set com.canonical.Unity.Launcher favorites "['nautilus-home.desktop', 'ubuntu-software-center.desktop', 'gnome-control-center.desktop', 'gnome-terminal.desktop', 'chromium-browser.desktop', 'eclipse.desktop', 'gvim.desktop']"
 sudo service lightdm restart
 SCRIPT
 
