@@ -6,6 +6,9 @@ sudo sed -i 's/"us"/"de"/g' /etc/default/keyboard
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y console-common
 sudo install-keymap de
 
+# set to UTF8 locale for later powerline 
+sudo update-locale LANG=en_US.uft8 LC_ALL=en_US.utf8
+
 # switch Ubuntu download mirror to German server
 sudo sed -i 's,http://us.archive.ubuntu.com/ubuntu/,http://ftp.fau.de/ubuntu/,' /etc/apt/sources.list
 sudo sed -i 's,http://security.ubuntu.com/ubuntu,http://ftp.fau.de/ubuntu,' /etc/apt/sources.list
@@ -15,7 +18,9 @@ sudo apt-get update -y
 echo "Europe/Berlin" | sudo tee /etc/timezone
 sudo dpkg-reconfigure -f noninteractive tzdata
 
-# install Ubuntu desktop
+# update/upgrade and install Ubuntu desktop
+sudo apt-get upgrade -y
+sudo apt-get install -y linux-headers-$(uname -r)
 sudo apt-get install -y --no-install-recommends ubuntu-desktop
 sudo apt-get install -y gnome-panel
 sudo apt-get install -y unity-lens-applications
@@ -25,7 +30,17 @@ gconftool -s /apps/gnome-terminal/profiles/Default/use_system_font -t bool false
 sudo apt-get install -y chromium-browser
 
 # install development tools
-sudo apt-get install -y git vim vim-gnome
+sudo apt-get install -y git
+
+# install VIM 7.4
+sudo add-apt-repository -y ppa:fcwu-tw/ppa
+sudo apt-get update -y
+sudo apt-get install -y vim
+sudo apt-get install -y vim-gnome --force-yes
+sudo apt-get install -y curl
+
+# install some useful devtools
+apt-get install -y screenkey
 
 if [ ! -d /vagrant/resources ]
 then
@@ -51,7 +66,7 @@ then
   cp /var/cache/oracle-jdk7-installer/jdk-7u51-linux-x64.tar.gz /vagrant/resources/jdk-7u51-linux-x64.tar.gz
 fi
 
-sudo apt-get install maven
+sudo apt-get install -y maven
 
 # install Eclipse Kepler 4.3.1 Java EE 
 if [ ! -f /vagrant/resources/eclipse-jee-kepler-SR1-linux-gtk-x86_64.tar.gz ]
@@ -101,9 +116,7 @@ GSCHEMA
 
 sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
 
-# start desktop
 echo "autologin-user=vagrant" | sudo tee -a /etc/lightdm/lightdm.conf
-sudo service lightdm restart
 
 # install JBoss Tools + subclipse
 if [ ! -f /vagrant/resources/jbosstools-Update-4.1.1.Final_2013-12-08_01-06-33-B605.zip ]
@@ -135,16 +148,34 @@ org.tmatesoft.svnkit.feature.group"
 # setup VBox Guest Additions
 sudo /etc/init.d/vboxadd-x11 setup
 sudo service lightdm restart
+
+# install external resources
+# install ssh key if provided at host
+if [ -f /vagrant/resources/.ssh/id_rsa ]; then
+  if [ ! -d /home/vagrant/.ssh ]; then
+    sudo -u vagrant mkdir /home/vagrant/.ssh
+    chmod 700 /home/vagrant/.ssh
+  fi
+  if [ ! -f /home/vagrant/.ssh/id_rsa ]; then
+    sudo -u vagrant cp /vagrant/resources/.ssh/id_rsa* /home/vagrant/.ssh/
+    chmod 600 /home/vagrant/.ssh/id_rsa*
+  fi
+fi
+
+# install .extra
+if [ -f /vagrant/resources/.extra ]; then
+  sudo -u vagrant cp /vagrant/resources/.extra /home/vagrant/.extra
+fi
 SCRIPT
 
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "opscode_ubunto-12.04_chef-provisionerless"
-  config.vm.box_url = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-12.04_chef-provisionerless.box"
-#  config.vm.box = "precise64"
-#  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+#  config.vm.box = "opscode_ubunto-12.04_chef-provisionerless"
+#  config.vm.box_url = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-12.04_chef-provisionerless.box"
+  config.vm.box = "precise64"
+  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
 
   config.vm.hostname = "java-ide-precise64"
 
@@ -153,8 +184,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provider :virtualbox do |vb|
     vb.gui = true
     # Use VBoxManage to customize the VM. For example to change memory:
-    vb.customize ["modifyvm", :id, "--memory", "1024", "--cpus", "1"]
+    vb.customize ["modifyvm", :id, "--memory", "2048", "--cpus", "2"]
     vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+    vb.customize ["modifyvm", :id, "--vram", "32"]
   end
 
 end
