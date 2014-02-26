@@ -143,7 +143,18 @@ org.tigris.subversion.subclipse.graph.feature.feature.group,\
 org.tmatesoft.svnkit.feature.group"
 
 # install Markdown Editor
-/opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director -repository http://download.eclipse.org/releases/kepler/ -repository http://dl.bintray.com/enide/Markdown/1.0.0/ -installIU markdown.editor.feature.feature.group
+/opt/eclipse/eclipse -nosplash -consolelog -clean \
+  -application org.eclipse.equinox.p2.director \
+  -installIU markdown.editor.feature.feature.group \
+  -repository http://download.eclipse.org/releases/kepler/ \
+  -repository http://dl.bintray.com/enide/Markdown/1.0.0/
+
+# install Eclipse Color Theme
+/opt/eclipse/eclipse -nosplash -consolelog -clean \
+  -application org.eclipse.equinox.p2.director \
+  -installIU com.github.eclipsecolortheme.feature.feature.group \
+  -metadataRepository http://eclipse-color-theme.github.com/update/ \
+  -artifactRepository http://eclipse-color-theme.github.com/update/
 
 # setup VBox Guest Additions
 sudo /etc/init.d/vboxadd-x11 setup
