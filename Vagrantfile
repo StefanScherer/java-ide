@@ -179,6 +179,16 @@ if [ -f /vagrant/resources/.extra ]; then
 fi
 SCRIPT
 
+# install maven settings if provided at host
+if [ -f /vagrant/resources/.m2/settings.xml ]; then
+  if [ ! -d /home/vagrant/.m2 ]; then
+    sudo -u vagrant mkdir /home/vagrant/.m2
+  fi
+  if [ ! -f /home/vagrant/.m2/settings.xml ]; then
+    sudo -u vagrant cp /vagrant/resources/.m2/settings* /home/vagrant/.m2/
+  fi
+fi
+
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 

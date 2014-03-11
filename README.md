@@ -25,9 +25,29 @@ The Java IDE will be installed into an Ubuntu 12.04 box. Just clone this repo an
 *   Subclipse
 *   Markdown Editor
 
-# To be done
-*   JBoss 
+# external files
+## SSH Keys
+Put external files like your ssh keys for GitHub into
 
+    resources/.ssh/id_rsa
+    resources/.ssh/id_rsa.pub
+
+and they will be copied into the box while provisioning.
+
+# extra environments
+Put additional environments for bash into the optional file 
+
+   resources/.extra
+
+and it will be copied into vagrant's home directory.
+
+# Maven settings
+Put additional maven settings into
+
+   resources/.m2/settings.xml
+   resources/.m2/settings-security.xml
+
+and they will be copied into vagrant's home directory.
 
 # Licensing
 Copyright (c) 2014 Stefan Scherer
