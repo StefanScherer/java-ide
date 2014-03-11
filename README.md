@@ -37,15 +37,15 @@ and they will be copied into the box while provisioning.
 # extra environments
 Put additional environments for bash into the optional file 
 
-   resources/.extra
+    resources/.extra
 
 and it will be copied into vagrant's home directory.
 
 # Maven settings
 Put additional maven settings into
 
-   resources/.m2/settings.xml
-   resources/.m2/settings-security.xml
+    resources/.m2/settings.xml
+    resources/.m2/settings-security.xml
 
 and they will be copied into vagrant's home directory.
 
